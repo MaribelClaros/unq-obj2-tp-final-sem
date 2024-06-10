@@ -7,6 +7,10 @@ public class Infraccion {
 	private Date fechaYHora;
 	private ZonaDeEstacionamiento zonaDeEstacionamiento;
 	
-	
+	public Infraccion(String patente, Date fechaYHora, ZonaDeEstacionamiento zonaDeEstacionamiento) {
+		this.patente = patente;
+		this.fechaYHora = fechaYHora;
+		this.zonaDeEstacionamiento = zonaDeEstacionamiento;
+	}
 
 }

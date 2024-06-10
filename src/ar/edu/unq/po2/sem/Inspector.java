@@ -14,8 +14,12 @@ public class Inspector {
 	}
 	
 	
-	public boolean estacionamientoVigente(String patente) {
-		return true;
+	public boolean estacionamientoVigente(SEM sem, String patente) {
+		return sem.consultarEstacionamientoVigente(patente);
+	}
+	
+	public void generarInfraccion(SEM sem, String patente) {
+		sem.altaInfraccion(this, patente);
 	}
 	
 

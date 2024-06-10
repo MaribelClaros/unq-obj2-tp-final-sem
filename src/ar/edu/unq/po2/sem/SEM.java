@@ -1,20 +1,25 @@
 package ar.edu.unq.po2.sem;
 
+import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
 
-public class SEM {
+public class SEM implements Publisher{
 	private List<ZonaDeEstacionamiento> zonaDeEstacionamientos;
 	private List<Estacionamiento> estacionamientos;
 	private List<Infraccion> infracciones;
 	private List<Celular> nroCelulares;
+	private List<Entidad> suscriptores;
 	
-	public SEM(List<zonaDeEstacionamiento> zonaDeEstacionamientos, List<Estacionamiento> estacionamientos, List<Infraccion> infracciones, List<Celular> nroCelulares) {
+	public SEM(List<ZonaDeEstacionamiento> zonaDeEstacionamientos, List<Estacionamiento> estacionamientos, List<Celular> nroCelulares) {
 		this.zonaDeEstacionamientos = zonaDeEstacionamientos;
 		this.estacionamientos = estacionamientos;
-		this.infracciones = infracciones;
+		this.infracciones = new ArrayList<Infraccion>();
 		this.nroCelulares = nroCelulares;
+		this.suscriptores =  new ArrayList<Entidad>();
 	}
 	
 	/*finalizarTodosLosEstacionamientos()
@@ -30,10 +35,16 @@ public class SEM {
 	}
 	
 	public void generarEstacionamiento(Estacionamiento estacionamiento) {
-		this.estacionamientos.add(estacionamiento);
+		if (estacionamiento.esValido()) {
+			this.estacionamientos.add(estacionamiento);
+			this.notificarInicioEstacionamiento();
+			
+		}
+		
 	}
 	
 	public void finalizarEstacionamientoViaApp(int nroCelular) {
+		this.notificarFinEstacionamiento();
 		
 	}
 	
@@ -55,7 +66,33 @@ public class SEM {
 		}
 	}
 	
-	public void altaInfraccion(String patente) {
+	public void altaInfraccion(Inspector inspector, String patente) {
+		Date dateNow = new Date();
+		Infraccion infraccion = new Infraccion(patente, dateNow, null);
+		this.infracciones.add(infraccion);
+	}
+
+	@Override
+	public void suscribirse(Entidad entidad) {
+		this.suscriptores.add(entidad);
+		
+	}
+
+	@Override
+	public void desuscribirse(Entidad entidad) {
+		this.suscriptores.remove(entidad);
+		
+	}
+
+	@Override
+	public void notificarInicioEstacionamiento() {
+		this.suscriptores.forEach(entidad -> entidad.inicioEstacionamiento());
+		
+	}
+
+	@Override
+	public void notificarFinEstacionamiento() {
+		this.suscriptores.forEach(entidad -> entidad.finEstacionamiento());
 		
 	}
 }
