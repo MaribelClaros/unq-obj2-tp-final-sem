@@ -6,11 +6,13 @@ public class Infraccion {
 	private String patente;
 	private Date fechaYHora;
 	private ZonaDeEstacionamiento zonaDeEstacionamiento;
+	private Inspector inspector;
 	
-	public Infraccion(String patente, Date fechaYHora, ZonaDeEstacionamiento zonaDeEstacionamiento) {
+	public Infraccion(String patente, Date fechaYHora, ZonaDeEstacionamiento zonaDeEstacionamiento, Inspector inspector) {
 		this.patente = patente;
 		this.fechaYHora = fechaYHora;
 		this.zonaDeEstacionamiento = zonaDeEstacionamiento;
+		this.inspector = inspector;
 	}
 
 }

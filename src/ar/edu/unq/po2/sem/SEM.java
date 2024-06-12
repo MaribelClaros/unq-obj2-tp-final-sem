@@ -13,6 +13,7 @@ public class SEM implements Publisher{
 	private List<Infraccion> infracciones;
 	private List<Celular> nroCelulares;
 	private List<Entidad> suscriptores;
+	private List<Compra> compras;
 	
 	public SEM(List<ZonaDeEstacionamiento> zonaDeEstacionamientos, List<Estacionamiento> estacionamientos, List<Celular> nroCelulares) {
 		this.zonaDeEstacionamientos = zonaDeEstacionamientos;
@@ -20,6 +21,7 @@ public class SEM implements Publisher{
 		this.infracciones = new ArrayList<Infraccion>();
 		this.nroCelulares = nroCelulares;
 		this.suscriptores =  new ArrayList<Entidad>();
+		this.compras = new ArrayList<Compra>();
 	}
 	
 	/*finalizarTodosLosEstacionamientos()
@@ -38,7 +40,6 @@ public class SEM implements Publisher{
 		if (estacionamiento.esValido()) {
 			this.estacionamientos.add(estacionamiento);
 			this.notificarInicioEstacionamiento();
-			
 		}
 		
 	}
@@ -46,15 +47,6 @@ public class SEM implements Publisher{
 	public void finalizarEstacionamientoViaApp(int nroCelular) {
 		this.notificarFinEstacionamiento();
 		
-	}
-	
-	public int consultarSaldo(int celular) {
-		Optional<Celular> nroAConsultar = this.nroCelulares.stream().filter(nroCelular -> nroCelular == celular).findFirst();
-		if (nroAConsultar.isPresent()) {
-			return nroAConsultar.getSaldo();
-		} else {
-			return 0; //TODO
-		}
 	}
 	
 	public boolean consultarEstacionamientoVigente(String patente) {
@@ -68,8 +60,17 @@ public class SEM implements Publisher{
 	
 	public void altaInfraccion(Inspector inspector, String patente) {
 		Date dateNow = new Date();
-		Infraccion infraccion = new Infraccion(patente, dateNow, null);
+		Optional<ZonaDeEstacionamiento> zonaAConsultar = this.zonaDeEstacionamientos.stream().filter(zonaDeEstacionamiento -> zonaDeEstacionamiento.getInspector() == inspector.getNombreYApellido()).findFirst();
+		Infraccion infraccion = new Infraccion(patente, dateNow, zonaAConsultar, inspector);
 		this.infracciones.add(infraccion);
+	}
+	
+	public void nuevaCompraPuntual(CompraPuntual compra) {
+		this.compras.add(compra);
+	}
+	
+	public void nuevaRecargaCelular(RecargaCelular recarga) {
+		this.compras.add(recarga);
 	}
 
 	@Override

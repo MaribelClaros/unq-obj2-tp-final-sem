@@ -1,7 +1,7 @@
 package ar.edu.unq.po2.sem;
 
 public class Inspector {
-	String nombreYApellido;
+	private String nombreYApellido;
 	
 	/*generarInfraccion(String patente): void
       estacionamientoVigente(string): bool*/
