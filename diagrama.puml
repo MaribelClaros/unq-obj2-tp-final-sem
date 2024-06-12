@@ -1,0 +1,166 @@
+@startuml
+'https://plantuml.com/class-diagram
+
+abstract class Estacionamiento {
+    - patente: int
+    - horaInicio: int
+    - horaFin: int
+    - esVigente: bool
+
+    + estaVigente(): bool
+    + esValido(): bool
+}
+
+abstract class Modo {
+    + notificar(): void
+    + {abstract} iniciarEstacionamiento(): void
+    + {abstract} finalizarEstacionamientos(): void
+}
+
+class App {
+    - estadoGPS: bool
+
+    + iniciarEstacionamiento(): void
+    + finalizarEstacionamientos(): void
+    + setEstado(EstadoMovimiento): void
+    + setEstadoGPS(bool): bool
+    + setModo(Modo): void
+}
+
+class Automatico {
+    + {abstract} iniciarEstacionamiento(): void
+    + {abstract} finalizarEstacionamientos(): void
+}
+
+class Celular {
+    - numero: int
+    - saldo: int
+}
+
+abstract class Compra {
+    - numeroControl: int
+    - fechaHora: Datetime
+}
+
+class CompraPuntual {
+    - cantidadHoras: int
+}
+
+class Driving {
+    + driving(): void
+    + walking(): void
+}
+
+class EstacionamientoApp {
+    - celular: int
+
+    + {static} new(): EstacionamientoApp
+    + estaVigente(): bool
+    + esValido(): bool
+}
+
+class EstacionamientoPuntoVenta {
+    + {static} new(): EstacionamientoPuntoVenta
+    + estaVigente(): bool
+    + esValido(): bool
+}
+
+class Infraccion {
+    - patente: int
+    - fechaHora: Datetime
+}
+
+class Inspector {
+    + generarInfraccion(String patente): void
+    + estacionamientoVigente(string): bool
+}
+
+class Manual {
+    + {abstract} iniciarEstacionamiento(): void
+    + {abstract} finalizarEstacionamientos(): void
+}
+
+interface Publisher {
+    + suscribirse(Entidad entidad)
+    + desuscribirse(Entidad entidad)
+    + notificarInicioEstacionamiento()
+    + notificarFinEstacionamiento()
+}
+
+class PuntoVenta {
+    + recargarCelular(int): void
+    + comprarEstacionamiento(int): Estacionamiento
+}
+
+class RecargaCelular {
+    - monto: int
+    - numero: int
+}
+
+class SEM {
+    + generarEstacionamiento(Estacionamiento): void
+    + nuevaCompraPuntual(CompraPuntual): void
+    + nuevaRecargaCelular(RecargaCelular): void
+    + finalizarTodosLosEstacionamientos(): void
+    + finalizarEstacionamientoViaApp(int nroCelular)
+    + consultarEstacionamientoVigente(String patente): bool
+    + altaInfraccion(Inspector, String patente)
+    + suscribirse(Entidad entidad)
+    + desuscribirse(Entidad entidad)
+    + notificarInicioEstacionamiento()
+    + notificarFinEstacionamiento()
+}
+
+class Walking {
+    + driving(): void
+    + walking(): void
+}
+
+class ZonaEstacionamiento
+
+interface Entidad {
+    + inicioEstacionamiento()
+    + finEstacionamiento()
+}
+
+interface EstadoMovimiento {
+    + driving(): void
+    + walking(): void
+}
+
+interface MovementSensor {
+    + driving(): void
+    + walking(): void
+}
+
+App ..|> MovementSensor
+App --> EstadoMovimiento: estado
+App ..> EstacionamientoApp
+App --> SEM: sem
+App <-- Driving: app
+App <-- Walking: app
+App --> Modo: modo
+Compra <|-- CompraPuntual
+Compra <|-- RecargaCelular
+CompraPuntual <-- EstacionamientoPuntoVenta
+Infraccion --> Inspector: inspector
+Infraccion --> ZonaEstacionamiento: zona
+Estacionamiento <|-- EstacionamientoApp
+Estacionamiento <|-- EstacionamientoPuntoVenta
+EstadoMovimiento <|.. Driving
+EstadoMovimiento <|.. Walking
+Modo <|-- Automatico
+Modo <|-- Manual
+SEM --> Entidad: suscriptores "*"
+PuntoVenta ..> Compra
+PuntoVenta ..> EstacionamientoPuntoVenta
+PuntoVenta --> SEM: sem
+SEM --> "*" Celular: celulares
+SEM --> "*" Compra: compras
+SEM --> "*" Estacionamiento: estacionamientos
+SEM --> "*" ZonaEstacionamiento: zonas
+SEM ..|> Publisher
+ZonaEstacionamiento --> "*" PuntoVenta: puntosVenta
+ZonaEstacionamiento --> Inspector: inspector
+
+@enduml

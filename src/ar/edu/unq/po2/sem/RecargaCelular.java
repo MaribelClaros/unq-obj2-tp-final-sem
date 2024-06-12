@@ -12,4 +12,12 @@ public class RecargaCelular extends Compra {
 		this.celular = celular;
 	}
 
+	public int getMonto() {
+		return monto;
+	}
+
+	public int getCelular() {
+		return celular;
+	}
+
 }
