@@ -15,11 +15,11 @@ public class SEM implements Publisher{
 	private List<Entidad> suscriptores;
 	private List<Compra> compras;
 	
-	public SEM(List<ZonaDeEstacionamiento> zonaDeEstacionamientos, List<Estacionamiento> estacionamientos, List<Celular> nroCelulares) {
+	public SEM(List<ZonaDeEstacionamiento> zonaDeEstacionamientos, List<Estacionamiento> estacionamientos) {
 		this.zonaDeEstacionamientos = zonaDeEstacionamientos;
 		this.estacionamientos = estacionamientos;
 		this.infracciones = new ArrayList<Infraccion>();
-		this.nroCelulares = nroCelulares;
+		this.nroCelulares = new ArrayList<Celular>();
 		this.suscriptores =  new ArrayList<Entidad>();
 		this.compras = new ArrayList<Compra>();
 	}
@@ -61,7 +61,7 @@ public class SEM implements Publisher{
 	public void altaInfraccion(Inspector inspector, String patente) {
 		Date dateNow = new Date();
 		Optional<ZonaDeEstacionamiento> zonaAConsultar = this.zonaDeEstacionamientos.stream().filter(zonaDeEstacionamiento -> zonaDeEstacionamiento.getInspector() == inspector.getNombreYApellido()).findFirst();
-		Infraccion infraccion = new Infraccion(patente, dateNow, zonaAConsultar, inspector);
+		Infraccion infraccion = new Infraccion(patente, dateNow, null, inspector);
 		this.infracciones.add(infraccion);
 	}
 	
