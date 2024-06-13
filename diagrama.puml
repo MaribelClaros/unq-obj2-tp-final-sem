@@ -209,7 +209,6 @@ App --> Modo: modo
 App <-- Modo: app
 Compra <|-- CompraPuntual
 Compra <|-- RecargaCelular
-CompraPuntual <-- EstacionamientoPuntoVenta
 Infraccion --> Inspector: inspector
 Infraccion --> ZonaEstacionamiento: zona
 Inspector --> SEM
