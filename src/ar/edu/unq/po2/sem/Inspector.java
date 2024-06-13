@@ -1,12 +1,20 @@
 package ar.edu.unq.po2.sem;
 
 public class Inspector {
+	private static int idInspector;
 	private String nombreYApellido;
 	
-	/*generarInfraccion(String patente): void
-      estacionamientoVigente(string): bool*/
 	public Inspector(String nombreYApellido) {
+		generarIdInspector();
 		this.nombreYApellido = nombreYApellido;
+	}
+	
+	private static void generarIdInspector() {
+		idInspector++;
+    }
+	
+	public static int getIdInspector() {
+		return idInspector;
 	}
 
 	public String getNombreYApellido() {

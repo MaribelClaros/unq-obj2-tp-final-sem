@@ -4,8 +4,6 @@ import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.Date;
 
-import ar.edu.unq.po2.sem.Compra;
-import ar.edu.unq.po2.sem.PuntoDeVenta;
 
 public class RecargaCelular extends Compra {
 	private int monto;

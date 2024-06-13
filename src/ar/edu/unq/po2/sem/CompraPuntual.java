@@ -13,6 +13,10 @@ public class CompraPuntual extends Compra{
 	}
 	
 	public int getCantHoras() {
-		return cantHoras;
+		return this.cantHoras;
+	}
+	
+	public String getPatente() {
+		return this.patente;
 	}
 }
