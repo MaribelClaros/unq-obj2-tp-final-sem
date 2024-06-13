@@ -26,7 +26,7 @@ abstract class Modo {
 class App {
     - estadoGPS: bool
 
-    + {static} App(SEM): void
+    + {static} App(int, String, EstadoMovimiento, SEM): void
     + iniciarEstacionamiento(): void
     + finalizarEstacionamientos(): void
     + setEstado(EstadoMovimiento): void
