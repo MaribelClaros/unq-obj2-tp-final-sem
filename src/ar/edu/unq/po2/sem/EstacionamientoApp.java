@@ -5,11 +5,10 @@ import java.time.LocalTime;
 public class EstacionamientoApp extends Estacionamiento {
 	protected int celular;
 	
-	public EstacionamientoApp(String patente, LocalTime inicio, LocalTime fin, boolean vigente, int celular) {
+	public EstacionamientoApp(String patente, LocalTime inicio, int celular) {
 		this.patente = patente;
 		this.horaInicio = inicio;
-		this.horaFin = fin;
-		this.esVigente = vigente;
+		this.esVigente = true;
 		this.celular = celular;
 	}
 	
