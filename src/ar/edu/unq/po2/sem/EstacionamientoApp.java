@@ -15,7 +15,7 @@ public class EstacionamientoApp extends Estacionamiento {
 	
 	public LocalTime horaMaximaFin(SEM sem, LocalTime horaInicio) {
 		int horasRestantes = cantidadDeHs(horaInicio);
-		int maximoHs = saldoDisponible(sem.getPrecioPorHora(), sem.getSaldoDe(this.getCelular()));
+		int maximoHs = saldoDisponible(sem.getPrecioPorHora(), sem.consultarSaldo(this.getCelular()));
 		int horasPosibles = Math.min(horasRestantes, maximoHs);
 			return horaInicio.plusHours(horasPosibles);
     }

@@ -57,13 +57,13 @@ public class SEM implements Publisher{
 	
 	public void finalizarTodosLosEstacionamientos() {
 		List<Estacionamiento> estacionamientosVigentes = this.estacionamientos.stream().filter(estacionamiento -> estacionamiento.estaVigente()).toList();
-		estacionamientosVigentes.stream().forEach(estacionamiento -> estacionamiento.setVigente(false));
+		estacionamientosVigentes.stream().forEach(estacionamiento -> estacionamiento.setEsVigente(false));
 	}
 	
 	public String generarEstacionamientoApp(App app) {
-		if(this.getSaldoDe(app.getNumeroCelular()) >= this.getPrecioPorHora()) {
-			EstacionamientoApp estacionamiento = new EstacionamientoApp(app.getPatente(), LocalTime.now(), true, app.getNumeroCelular());
-			estacionamiento.horaMaximaFin(this.getPrecioPorHora(), this.consultarSaldo(app.getNumeroCelular());
+		if(this.consultarSaldo(app.getCelular()) >= this.getPrecioPorHora()) {
+			EstacionamientoApp estacionamiento = new EstacionamientoApp(app.getPatente(), LocalTime.now(), true, app.getCelular());
+			estacionamiento.horaMaximaFin(this, LocalTime.now());
 			this.estacionamientos.add(estacionamiento);
 			this.notificarInicioEstacionamiento(estacionamiento);
 			
@@ -93,6 +93,7 @@ public class SEM implements Publisher{
 		estacionamientoAFinalizar.setHoraFin(LocalTime.now());
 		estacionamientoAFinalizar.setVigente(false);
 		this.descontarSaldoDeEstacionamiento(estacionamientoAFinalizar.getHoraInicio(), estacionamientoAFinalizar.getHoraFin(), nroCelular);
+    
 		this.notificarFinEstacionamiento(estacionamientoAFinalizar);
 		return this.mostrarInformacionFinEstacionamiento(estacionamientoAFinalizar);
 	}
@@ -127,7 +128,7 @@ public class SEM implements Publisher{
 	public boolean consultarEstacionamientoVigente(String patente) {
 		Optional<Estacionamiento> estacionamientoAConsultar = this.estacionamientos.stream().filter(estacionamiento -> estacionamiento.getPatente() == patente).findFirst();
 		if (estacionamientoAConsultar.isPresent()) {
-			return estacionamientoAConsultar.getVigencia();
+			return estacionamientoAConsultar.estaVigente();
 		} else {
 			return false;
 		}
