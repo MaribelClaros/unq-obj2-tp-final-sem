@@ -96,4 +96,8 @@ public class SEM implements Publisher{
 		this.suscriptores.forEach(entidad -> entidad.finEstacionamiento());
 		
 	}
+	
+	public void consultarSaldo(int nroCelular) {
+		
+	}
 }
