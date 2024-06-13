@@ -11,7 +11,7 @@ public class Walking implements EstadoMovimiento {
     public void driving() {
         EstadoMovimiento nuevoEstado = new Driving(this.app);
         this.app.setEstado(nuevoEstado);
-        this.app.finalizarEstacionamiento();
+        this.app.getModo().finalizarEstacionamiento();
     }
 
     @Override

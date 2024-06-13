@@ -15,6 +15,6 @@ public class Driving implements EstadoMovimiento {
     public void walking() {
         EstadoMovimiento nuevoEstado = new Walking(this.app);
         this.app.setEstado(nuevoEstado);
-        this.app.iniciarEstacionamiento();
+        this.app.getModo().iniciarEstacionamiento();
     }
 }

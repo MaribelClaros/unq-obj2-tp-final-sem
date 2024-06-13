@@ -37,6 +37,10 @@ public class App implements MovementSensor {
 		this.modo = m;
     }
 
+	public Modo getModo() {
+		return modo;
+	}
+
 	public int getCelular() {
 		return celular;
 	}

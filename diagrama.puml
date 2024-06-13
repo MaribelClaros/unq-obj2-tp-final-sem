@@ -32,6 +32,7 @@ class App {
     + setEstado(EstadoMovimiento): void
     + setEstadoGPS(bool): bool
     + setModo(Modo): void
+    + getModo(): Modo
     + getCelular(): int
     + getPatente(): String
 }
