@@ -1,6 +1,8 @@
 package ar.edu.unq.po2.sem;
 
-import ar.edu.unq.po2.sem.EstacionamientoPuntoVenta;
+import java.time.LocalDate;
+import java.time.LocalTime;
+import java.util.Date;
 
 public class PuntoDeVenta {
 	private String zona;
@@ -9,14 +11,19 @@ public class PuntoDeVenta {
 		this.zona = z;
 	}
 	
-	public void recargarCelular(int número, int monto) {
-		sem.nuevaRecargaCelular(número, monto);
+	public void recargarCelular(SEM sem, int celular, int monto) {
+		RecargaCelular recarga = new RecargaCelular (LocalDate.now(), this, monto, celular);
+		sem.nuevaRecargaCelular(recarga);
 	}
 	
-	public EstacionamientoPuntoVenta comprarEstacionamiento(int cantHoras, String patente) {
-		CompraPuntual compra = new CompraPuntual(0, fechaYHora, this.zona, cantHoras, patente);
+	public void comprarEstacionamiento(SEM sem, int cantHoras, String patente) {
+		CompraPuntual compra = new CompraPuntual(LocalDate.now(), this, cantHoras, patente);		
 		sem.nuevaCompraPuntual(compra);
-		sem.generarEstacionamiento(); // ??
+		EstacionamientoPuntoVenta estacionamiento = new EstacionamientoPuntoVenta(patente, LocalTime.now(), this.horaDeFinDeCompra(cantHoras), true);
+		sem.agregarEstacionamientoPuntoVenta(estacionamiento);
+	}
+	
+	public LocalTime horaDeFinDeCompra(int cantHoras) {
+		return LocalTime.now().plusHours(cantHoras);
 	}
 }
-    
