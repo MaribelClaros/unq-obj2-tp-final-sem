@@ -19,8 +19,9 @@ public class Inspector {
 	}
 	
 	public void generarInfraccion(SEM sem, String patente) {
-		sem.altaInfraccion(this, patente);
+		if(!this.estacionamientoVigente(sem, patente)) {
+			sem.altaInfraccion(this, patente);
+		}
 	}
-	
 
 }
