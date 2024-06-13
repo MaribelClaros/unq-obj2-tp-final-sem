@@ -2,7 +2,6 @@ package ar.edu.unq.po2.sem;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
-import java.util.Date;
 
 public class PuntoDeVenta {
 	private String zona;
