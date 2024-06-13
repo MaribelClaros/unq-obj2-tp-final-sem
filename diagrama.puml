@@ -8,10 +8,16 @@ abstract class Estacionamiento {
     - esVigente: bool
 
     + estaVigente(): bool
-    + esValido(): bool
+    + getHoraInicio(): localTime
+    + getHoraFin(): localTime
+    + getPatente(): String
+    + estaVigente(): bool
+    + setEstaVigente(bool): void
+    + setHoraFin(localTime): void
 }
 
 abstract class Modo {
+    + {static} Modo(App): void
     + notificar(): void
     + {abstract} iniciarEstacionamiento(): void
     + {abstract} finalizarEstacionamientos(): void
@@ -20,14 +26,18 @@ abstract class Modo {
 class App {
     - estadoGPS: bool
 
+    + {static} App(SEM): void
     + iniciarEstacionamiento(): void
     + finalizarEstacionamientos(): void
     + setEstado(EstadoMovimiento): void
     + setEstadoGPS(bool): bool
     + setModo(Modo): void
+    + getCelular(): int
+    + getPatente(): String
 }
 
 class Automatico {
+    + {static} Automatico(App): Automatico
     + {abstract} iniciarEstacionamiento(): void
     + {abstract} finalizarEstacionamientos(): void
 }
@@ -36,19 +46,22 @@ abstract class Compra {
     # {static} nroControl: int
     # fechaYHora: LocalDate
     # puntoDeVenta: PuntoDeVenta
-    + Compra(LocalDate fechaYHora, PuntoDeVenta punto): Compra
+
+    + {static} Compra(LocalDate fechaYHora, PuntoDeVenta punto): void
     - generarNroControl(): int
 }
 
 class CompraPuntual {
     - cantidadHoras: int
     - patente: String
-    + CompraPuntual(LocalDate fechaYHora, PuntoDeVenta punto, int cantHoras, String patente): CompraPuntual
+
+    + {static} CompraPuntual(LocalDate fechaYHora, PuntoDeVenta punto, int cantHoras, String patente): CompraPuntual
     + getCantHoras(): int
     + getPatente(): String
 }
 
 class Driving {
+    + {static} Driving(App): Driving
     + driving(): void
     + walking(): void
 }
@@ -56,21 +69,24 @@ class Driving {
 class EstacionamientoApp {
     - celular: int
 
-    + {static} new(): EstacionamientoApp
+    + {static} EstacionamientoApp(int, localTime, int): EstacionamientoApp
+    + horaMaximaFin(SEM, localTime): localTime
+    + cantidadDeHs(localTime): int
+    + saldoDisponible(int, int): int
+    + getCelular(): int
     + estaVigente(): bool
-    + esValido(): bool
 }
 
 class EstacionamientoPuntoVenta {
-    + {static} new(): EstacionamientoPuntoVenta
+    + {static} EstacionamientoPuntoVenta(String, localTime, localTime, bool): EstacionamientoPuntoVenta
     + estaVigente(): bool
-    + esValido(): bool
 }
 
 class Infraccion {
     - patente: String
     - fechaYHora: Date
-    + Infraccion(String patente, Date fechaYHora, ZonaDeEstacionamiento zonaDeEstacionamiento, Inspector inspector): Infraccion
+
+    + {static} Infraccion(String, Date, ZonaDeEstacionamiento, Inspector): Infraccion
     + getPatente(): String
     + getFechaYHora(): Date
     + getZonaDeEstacionamiento(): ZonaDeEstacionamiento
@@ -80,32 +96,40 @@ class Infraccion {
 class Inspector {
     - {static} idInspector: int
     - nombreYApellido: String
-    + Inspector(String nombreYApellido): Inspector
+
+    + {static} Inspector(String): Inspector
     + generarInfraccion(SEM sem, String patente): void
     + estacionamientoVigente(SEM sem, string): bool
+    + getNombreYApellido(): String
+    + {static} getIdInspector(): int
+    - {static} generarIdInspector(): void
 }
 
 class Manual {
+    + {static} Manual(App): Manual
     + {abstract} iniciarEstacionamiento(): void
     + {abstract} finalizarEstacionamientos(): void
 }
 
 interface Publisher {
-    + suscribirse(Entidad entidad)
-    + desuscribirse(Entidad entidad)
-    + notificarInicioEstacionamiento(Estacionamiento estacionamiento)
-    + notificarFinEstacionamiento(Estacionamiento estacionamiento)
+    + suscribirse(Entidad)
+    + desuscribirse(Entidad)
+    + notificarInicioEstacionamiento(Estacionamiento)
+    + notificarFinEstacionamiento(Estacionamiento)
 }
 
 class PuntoVenta {
+    + {static} PuntoVenta(String): PuntoVenta
     + recargarCelular(int): void
     + comprarEstacionamiento(int): Estacionamiento
+    + horaFinDeCompra(int): localTime
 }
 
 class RecargaCelular {
     - monto: int
     - celular: int
-    + RecargaCelular(LocalDate fechaYHora, PuntoDeVenta punto, int monto, int celular): RecargaCelular
+
+    + {static} RecargaCelular(LocalDate, PuntoDeVenta, int, int): RecargaCelular
     + getMonto(): int
     + getCelular(): int
 }
@@ -115,13 +139,15 @@ class SEM {
     - {static} inicioFranjaHoraria: LocalTime
     - {static} finFranjaHoraria: LocalTime
     - celulares: HashMap<Integer, Integer>
-    + SEM(List<ZonaDeEstacionamiento>): SEM
+
+    + {static} SEM(List<ZonaDeEstacionamiento>): SEM
     - mostrarInformacionEstacionamiento(EstacionamientoApp): String
     - mostrarErrorEstacionamiento(): String
     - descontarSaldoDeEstacionamiento(LocalTime inicio, LocalTime fin, int nroCelular)
     - mostrarInformacionFinEstacionamiento(Estacionamiento): String
     - calcularCostoEstacionamiento(int duracion): int
     - calcularDuracionEstacionamiento(LocalTime inicio, LocalTime fin): int
+    - estacionamientoPorApp(): Stream<EstacionamientoApp>
     + getPrecioPorHora(): int
     + getZonasDeEstacionamiento(): List<ZonaDeEstacionamiento>
     + getEstacionamientos(): List<Estacionamiento>
@@ -144,13 +170,15 @@ class SEM {
 }
 
 class Walking {
+    + {static} Walking(App): Walking
     + driving(): void
     + walking(): void
 }
 
 class ZonaEstacionamiento {
     - idZona: int
-    + ZonaDeEstacionamiento(int idZona, Inspector inspector, List<PuntoDeVenta> puntosDeVenta): ZonaDeEstacionamiento
+
+    + {static} ZonaDeEstacionamiento(int, Inspector, List<PuntoDeVenta>): ZonaDeEstacionamiento
     + getIdZona(): int
     + getInspector(): String
     + getPuntosDeVenta(): List<PuntoDeVenta>
@@ -178,6 +206,7 @@ App --> SEM: sem
 App <-- Driving: app
 App <-- Walking: app
 App --> Modo: modo
+App <-- Modo: app
 Compra <|-- CompraPuntual
 Compra <|-- RecargaCelular
 CompraPuntual <-- EstacionamientoPuntoVenta

@@ -58,7 +58,7 @@ public class SEM implements Publisher{
 	
 	public void finalizarTodosLosEstacionamientos() {
 		List<Estacionamiento> estacionamientosVigentes = this.estacionamientos.stream().filter(estacionamiento -> estacionamiento.estaVigente()).toList();
-		estacionamientosVigentes.stream().forEach(estacionamiento -> estacionamiento.setEsVigente(false));
+		estacionamientosVigentes.stream().forEach(estacionamiento -> estacionamiento.setEstaVigente(false));
 	}
 	
 	public String generarEstacionamientoApp(App app) {

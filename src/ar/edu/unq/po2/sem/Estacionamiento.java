@@ -31,8 +31,4 @@ public abstract class Estacionamiento {
 	public void setHoraFin(LocalTime horaFin) {
 		this.horaFin = horaFin;
 	}
-
-	public void setEsVigente(boolean esVigente) {
-		this.esVigente = esVigente;
-	}
 }
