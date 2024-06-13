@@ -32,18 +32,20 @@ class Automatico {
     + {abstract} finalizarEstacionamientos(): void
 }
 
-class Celular {
-    - numero: int
-    - saldo: int
-}
-
 abstract class Compra {
-    - numeroControl: int
-    - fechaHora: Datetime
+    # {static} nroControl: int
+    # fechaYHora: LocalDate
+    # puntoDeVenta: PuntoDeVenta
+    + Compra(LocalDate fechaYHora, PuntoDeVenta punto): Compra
+    - generarNroControl(): int
 }
 
 class CompraPuntual {
     - cantidadHoras: int
+    - patente: String
+    + CompraPuntual(LocalDate fechaYHora, PuntoDeVenta punto, int cantHoras, String patente): CompraPuntual
+    + getCantHoras(): int
+    + getPatente(): String
 }
 
 class Driving {
@@ -66,13 +68,21 @@ class EstacionamientoPuntoVenta {
 }
 
 class Infraccion {
-    - patente: int
-    - fechaHora: Datetime
+    - patente: String
+    - fechaYHora: Date
+    + Infraccion(String patente, Date fechaYHora, ZonaDeEstacionamiento zonaDeEstacionamiento, Inspector inspector): Infraccion
+    + getPatente(): String
+    + getFechaYHora(): Date
+    + getZonaDeEstacionamiento(): ZonaDeEstacionamiento
+    + getInspector(): Inspector
 }
 
 class Inspector {
-    + generarInfraccion(String patente): void
-    + estacionamientoVigente(string): bool
+    - {static} idInspector: int
+    - nombreYApellido: String
+    + Inspector(String nombreYApellido): Inspector
+    + generarInfraccion(SEM sem, String patente): void
+    + estacionamientoVigente(SEM sem, string): bool
 }
 
 class Manual {
@@ -83,8 +93,8 @@ class Manual {
 interface Publisher {
     + suscribirse(Entidad entidad)
     + desuscribirse(Entidad entidad)
-    + notificarInicioEstacionamiento()
-    + notificarFinEstacionamiento()
+    + notificarInicioEstacionamiento(Estacionamiento estacionamiento)
+    + notificarFinEstacionamiento(Estacionamiento estacionamiento)
 }
 
 class PuntoVenta {
@@ -94,21 +104,43 @@ class PuntoVenta {
 
 class RecargaCelular {
     - monto: int
-    - numero: int
+    - celular: int
+    + RecargaCelular(LocalDate fechaYHora, PuntoDeVenta punto, int monto, int celular): RecargaCelular
+    + getMonto(): int
+    + getCelular(): int
 }
 
 class SEM {
-    + generarEstacionamiento(Estacionamiento): void
-    + nuevaCompraPuntual(CompraPuntual): void
-    + nuevaRecargaCelular(RecargaCelular): void
-    + finalizarTodosLosEstacionamientos(): void
-    + finalizarEstacionamientoViaApp(int nroCelular)
+    - {static} precioPorHora: int
+    - {static} inicioFranjaHoraria: LocalTime
+    - {static} finFranjaHoraria: LocalTime
+    - celulares: HashMap<Integer, Integer>
+    + SEM(List<ZonaDeEstacionamiento>): SEM
+    - mostrarInformacionEstacionamiento(EstacionamientoApp): String
+    - mostrarErrorEstacionamiento(): String
+    - descontarSaldoDeEstacionamiento(LocalTime inicio, LocalTime fin, int nroCelular)
+    - mostrarInformacionFinEstacionamiento(Estacionamiento): String
+    - calcularCostoEstacionamiento(int duracion): int
+    - calcularDuracionEstacionamiento(LocalTime inicio, LocalTime fin): int
+    + getPrecioPorHora(): int
+    + getZonasDeEstacionamiento(): List<ZonaDeEstacionamiento>
+    + getEstacionamientos(): List<Estacionamiento>
+    + getInfracciones(): List<Infraccion>
+    + getCompras(): List<Compra>
+    + getCelulares(): HashMap<Integer, Integer>
+    + finalizarTodosLosEstacionamientos()
+    + generarEstacionamientoApp(App): String
+    + agregarEstacionamientoPuntoVenta(EstacionamientoPuntoVenta)
+    + finalizarEstacionamientoViaApp(int nroCelular): String
+    + consultarSaldo(int nroCelular):  int
     + consultarEstacionamientoVigente(String patente): bool
     + altaInfraccion(Inspector, String patente)
+    + nuevaCompraPuntual(CompraPuntual)
+    + nuevaRecargaCelular(RecargaCelular)
     + suscribirse(Entidad entidad)
     + desuscribirse(Entidad entidad)
-    + notificarInicioEstacionamiento()
-    + notificarFinEstacionamiento()
+    + notificarInicioEstacionamiento(Estacionamiento estacionamiento)
+    + notificarFinEstacionamiento(Estacionamiento estacionamiento)
 }
 
 class Walking {
@@ -116,11 +148,17 @@ class Walking {
     + walking(): void
 }
 
-class ZonaEstacionamiento
+class ZonaEstacionamiento {
+    - idZona: int
+    + ZonaDeEstacionamiento(int idZona, Inspector inspector, List<PuntoDeVenta> puntosDeVenta): ZonaDeEstacionamiento
+    + getIdZona(): int
+    + getInspector(): String
+    + getPuntosDeVenta(): List<PuntoDeVenta>
+}
 
 interface Entidad {
-    + inicioEstacionamiento()
-    + finEstacionamiento()
+    + inicioEstacionamiento(Estacionamiento estacionamiento)
+    + finEstacionamiento(Estacionamiento estacionamiento)
 }
 
 interface EstadoMovimiento {
@@ -145,6 +183,7 @@ Compra <|-- RecargaCelular
 CompraPuntual <-- EstacionamientoPuntoVenta
 Infraccion --> Inspector: inspector
 Infraccion --> ZonaEstacionamiento: zona
+Inspector --> SEM
 Estacionamiento <|-- EstacionamientoApp
 Estacionamiento <|-- EstacionamientoPuntoVenta
 EstadoMovimiento <|.. Driving
@@ -155,7 +194,6 @@ SEM --> Entidad: suscriptores "*"
 PuntoVenta ..> Compra
 PuntoVenta ..> EstacionamientoPuntoVenta
 PuntoVenta --> SEM: sem
-SEM --> "*" Celular: celulares
 SEM --> "*" Compra: compras
 SEM --> "*" Estacionamiento: estacionamientos
 SEM --> "*" ZonaEstacionamiento: zonas

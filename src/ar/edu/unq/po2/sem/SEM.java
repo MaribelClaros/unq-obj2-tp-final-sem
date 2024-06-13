@@ -92,13 +92,13 @@ public class SEM implements Publisher{
 		Estacionamiento estacionamientoAFinalizar = this.estacionamientos.stream().filter(estacionamiento -> estacionamiento.getCelular() == nroCelular).findAny().orElseThrow();
 		estacionamientoAFinalizar.setHoraFin(LocalTime.now());
 		estacionamientoAFinalizar.setVigente(false);
-		this.descontarSaldoDeEstacionamiento(estacionamientoAFinalizar, nroCelular);
+		this.descontarSaldoDeEstacionamiento(estacionamientoAFinalizar.getHoraInicio(), estacionamientoAFinalizar.getHoraFin(), nroCelular);
 		this.notificarFinEstacionamiento(estacionamientoAFinalizar);
 		return this.mostrarInformacionFinEstacionamiento(estacionamientoAFinalizar);
 	}
 	
-	private void descontarSaldoDeEstacionamiento(Estacionamiento estacionamiento, int nroCelular) {
-		int duracion = this.calcularDuracionEstacionamiento(estacionamiento.getHoraInicio(), estacionamiento.getHoraFin());
+	private void descontarSaldoDeEstacionamiento(LocalTime inicio, LocalTime fin, int nroCelular) {
+		int duracion = this.calcularDuracionEstacionamiento(inicio, fin);
 		this.celulares.put(nroCelular, this.celulares.get(nroCelular) - this.calcularCostoEstacionamiento(duracion));
 	}
 
