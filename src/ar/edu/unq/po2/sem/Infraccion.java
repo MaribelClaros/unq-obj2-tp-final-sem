@@ -15,4 +15,21 @@ public class Infraccion {
 		this.inspector = inspector;
 	}
 
+	public String getPatente() {
+		return patente;
+	}
+
+	public Date getFechaYHora() {
+		return fechaYHora;
+	}
+
+	public ZonaDeEstacionamiento getZonaDeEstacionamiento() {
+		return zonaDeEstacionamiento;
+	}
+
+	public Inspector getInspector() {
+		return inspector;
+	}
+
+
 }

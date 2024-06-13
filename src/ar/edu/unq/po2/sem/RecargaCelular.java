@@ -2,8 +2,6 @@ package ar.edu.unq.po2.sem;
 
 import java.util.Date;
 
-import ar.edu.unq.po2.sem.Compra;
-import ar.edu.unq.po2.sem.PuntoDeVenta;
 
 public class RecargaCelular extends Compra {
 	private int monto;

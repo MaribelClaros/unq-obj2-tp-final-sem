@@ -2,8 +2,6 @@ package ar.edu.unq.po2.sem;
 
 import java.util.Date;
 
-import ar.edu.unq.po2.sem.PuntoDeVenta;
-
     public abstract class Compra {
     private int nroControl;
 	private Date fechaYHora;

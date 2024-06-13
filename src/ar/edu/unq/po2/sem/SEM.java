@@ -2,8 +2,10 @@ package ar.edu.unq.po2.sem;
 
 import java.time.LocalDateTime;
 import java.time.LocalTime;
+import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Optional;
 
@@ -15,80 +17,111 @@ public class SEM implements Publisher{
 	private List<ZonaDeEstacionamiento> zonaDeEstacionamientos;
 	private List<Estacionamiento> estacionamientos;
 	private List<Infraccion> infracciones;
-	private List<Celular> nroCelulares;
+	private HashMap<Integer, Integer> celulares;
 	private List<Entidad> suscriptores;
 	private List<Compra> compras;
 	
-	public SEM(List<ZonaDeEstacionamiento> zonaDeEstacionamientos, List<Estacionamiento> estacionamientos) {
+	public SEM(List<ZonaDeEstacionamiento> zonaDeEstacionamientos) {
 		this.zonaDeEstacionamientos = zonaDeEstacionamientos;
-		this.estacionamientos = estacionamientos;
+		this.estacionamientos = new ArrayList<Estacionamiento>();
 		this.infracciones = new ArrayList<Infraccion>();
-		this.nroCelulares = new ArrayList<Celular>();
+		this.celulares = new HashMap<>();
 		this.suscriptores =  new ArrayList<Entidad>();
 		this.compras = new ArrayList<Compra>();
 	}
 	
-	/*finalizarTodosLosEstacionamientos()
-    + generarEstacionamiento(Estacionamiento estacionamiento)
-    + finalizarEstacionamientoViaApp(int nroCelular)
-    + consultarSaldo(int nrocelular): int
-    + consultarEstacionamientoVigente(int patente): bool
-    + altaInfraccion(int): void*/
-	
+	//getters
 	public int getPrecioPorHora() {
 		return precioPorHora;
 	}
 	
+	public List<ZonaDeEstacionamiento> getZonasDeEstacionamiento() {
+		return this.zonaDeEstacionamientos;
+	}
+	
+	public List<Estacionamiento> getEstacionamientos() {
+		return this.estacionamientos;
+	}
+	
+	public List<Infraccion> getInfracciones() {
+		return this.infracciones;
+	}
+	
+	public List<Compra> getCompras() {
+		return this.compras;
+	}
+	
+	public HashMap<Integer, Integer> getCelulares() {
+		return this.celulares;
+	}
+	
 	public void finalizarTodosLosEstacionamientos() {
 		List<Estacionamiento> estacionamientosVigentes = this.estacionamientos.stream().filter(estacionamiento -> estacionamiento.estaVigente()).toList();
-		estacionamientosVigentes.stream().forEach(estacionamiento -> estacionamiento.setEstaVigente(false));
+		estacionamientosVigentes.stream().forEach(estacionamiento -> estacionamiento.setVigente(false));
 	}
 	
 	public String generarEstacionamientoApp(App app) {
-		if(app.getSaldo() >= this.getPrecioPorHora()) {
-			EstacionamientoApp estacionamiento = new EstacionamientoApp(app.getPatente(), LocalTime.now(), this.calcularFinEstacionamientoApp(), true, app.getCelular());
+		if(this.getSaldoDe(app.getNumeroCelular()) >= this.getPrecioPorHora()) {
+			EstacionamientoApp estacionamiento = new EstacionamientoApp(app.getPatente(), LocalTime.now(), true, app.getNumeroCelular());
+			estacionamiento.horaMaximaFin(this.getPrecioPorHora(), this.consultarSaldo(app.getNumeroCelular());
 			this.estacionamientos.add(estacionamiento);
-			return this.getInformacionEstacionamiento(estacionamiento);
+			this.notificarInicioEstacionamiento(estacionamiento);
+			
+			return this.mostrarInformacionEstacionamiento(estacionamiento);
 		}
 		else {
-			return this.getErrorEstacionamiento();
-		}
-		
+			return this.mostrarErrorEstacionamiento();
+		}	
 	}
 	
-	private String getErrorEstacionamiento() {
+	public void agregarEstacionamientoPuntoVenta(EstacionamientoPuntoVenta estacionamiento) {
+		this.estacionamientos.add(estacionamiento);
+	}
+	
+	
+	private String mostrarErrorEstacionamiento() {
 		return "Saldo insuficiente. Estacionamiento no permitido.";
 	}
 
-	private String getInformacionEstacionamiento(EstacionamientoApp estacionamiento) {
+	private String mostrarInformacionEstacionamiento(EstacionamientoApp estacionamiento) {
 		return "¡Estacionamiento exitoso! Hora inicio: " + estacionamiento.getHoraInicio() + ". Hora máxima fin: " + estacionamiento.getHoraFin();
 	}
 
-	private int calcularFinEstacionamientoApp() {
-		// TODO Auto-generated method stub
-		return 0;
-	}
 
 	public String finalizarEstacionamientoViaApp(int nroCelular) {
 		Estacionamiento estacionamientoAFinalizar = this.estacionamientos.stream().filter(estacionamiento -> estacionamiento.getCelular() == nroCelular).findAny().orElseThrow();
-		estacionamientoAFinalizar.setFinHoraFin(LocalTime.now());
+		estacionamientoAFinalizar.setHoraFin(LocalTime.now());
 		estacionamientoAFinalizar.setVigente(false);
-		//this.estacionamientos.remove(estacionamientoAFinalizar);
-		this.notificarFinEstacionamiento();
-		return this.getInformacionFinEstacionamiento(estacionamientoAFinalizar);
+		this.descontarSaldoDeEstacionamiento(estacionamientoAFinalizar, nroCelular);
+		this.notificarFinEstacionamiento(estacionamientoAFinalizar);
+		return this.mostrarInformacionFinEstacionamiento(estacionamientoAFinalizar);
 	}
 	
-	private String getInformacionFinEstacionamiento(Estacionamiento estacionamiento) {
+	private void descontarSaldoDeEstacionamiento(Estacionamiento estacionamiento, int nroCelular) {
+		int duracion = this.calcularDuracionEstacionamiento(estacionamiento.getHoraInicio(), estacionamiento.getHoraFin());
+		this.celulares.put(nroCelular, this.celulares.get(nroCelular) - this.calcularCostoEstacionamiento(duracion));
+	}
+
+
+	private String mostrarInformacionFinEstacionamiento(Estacionamiento estacionamiento) {
 		int duracion = this.calcularDuracionEstacionamiento(estacionamiento.getHoraInicio(), estacionamiento.getHoraFin());
 		
 		return "Estacionamiento finalizado. Hora inicio: " + estacionamiento.getHoraInicio() + 
 				". Hora fin: " + estacionamiento.getHoraFin() + 
 				". Duración: "+ duracion  + 
-				". Costo: " + this.calcularCostoEstacionamiento(duracion, this.getPrecioPorHora());
+				". Costo: " + this.calcularCostoEstacionamiento(duracion);
 	}
 
-	private int calcularCostoEstacionamiento(int duracion, int precioPorHora) {
-		return duracion * precioPorHora;
+	private int calcularCostoEstacionamiento(int duracion) {
+		return duracion * this.getPrecioPorHora();
+	}
+	
+	private int calcularDuracionEstacionamiento(LocalTime inicio, LocalTime fin) {
+		return (int) inicio.until(fin, ChronoUnit.HOURS);
+	}
+	
+	public int consultarSaldo(int nroCelular) {
+		return (celulares.containsKey(nroCelular)) ? celulares.get(nroCelular) : 0;
 	}
 
 	public boolean consultarEstacionamientoVigente(String patente) {
@@ -96,7 +129,7 @@ public class SEM implements Publisher{
 		if (estacionamientoAConsultar.isPresent()) {
 			return estacionamientoAConsultar.getVigencia();
 		} else {
-			return false; //TODO
+			return false;
 		}
 	}
 	
@@ -112,8 +145,10 @@ public class SEM implements Publisher{
 	}
 	
 	public void nuevaRecargaCelular(RecargaCelular recarga) {
+		this.celulares.put(recarga.getCelular(), this.consultarSaldo(recarga.getCelular()) + recarga.getMonto());
 		this.compras.add(recarga);
 	}
+
 
 	@Override
 	public void suscribirse(Entidad entidad) {
@@ -128,18 +163,15 @@ public class SEM implements Publisher{
 	}
 
 	@Override
-	public void notificarInicioEstacionamiento() {
-		this.suscriptores.forEach(entidad -> entidad.inicioEstacionamiento());
+	public void notificarInicioEstacionamiento(Estacionamiento estacionamiento) {
+		this.suscriptores.forEach(entidad -> entidad.inicioEstacionamiento(estacionamiento));
 		
 	}
 
 	@Override
-	public void notificarFinEstacionamiento() {
-		this.suscriptores.forEach(entidad -> entidad.finEstacionamiento());
+	public void notificarFinEstacionamiento(Estacionamiento estacionamiento) {
+		this.suscriptores.forEach(entidad -> entidad.finEstacionamiento(estacionamiento));
 		
 	}
 	
-	public void consultarSaldo(int nroCelular) {
-		
-	}
 }

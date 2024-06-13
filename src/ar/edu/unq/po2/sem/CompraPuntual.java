@@ -2,9 +2,6 @@ package ar.edu.unq.po2.sem;
 
 import java.util.Date;
 
-import ar.edu.unq.po2.sem.Compra;
-import ar.edu.unq.po2.sem.PuntoDeVenta;
-
 public class CompraPuntual extends Compra{
 	private int cantHoras;
 	private String patente;
@@ -16,7 +13,11 @@ public class CompraPuntual extends Compra{
 	}
 	
 	public int getCantHoras() {
-		return cantHoras;
+		return this.cantHoras;
+	}
+	
+	public String getPatente() {
+		return this.patente;
 	}
 	
 
