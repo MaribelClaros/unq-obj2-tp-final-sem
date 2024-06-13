@@ -19,7 +19,6 @@ public class App {
 	
 	public void iniciarEstacionamiento() {
 		this.sem.generarEstacionamientoApp(this);
-        setEstado(Walking);
 	}
 	
 	public void finalizarEstacionamiento() {
