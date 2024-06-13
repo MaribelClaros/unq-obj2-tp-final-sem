@@ -1,5 +1,7 @@
 package ar.edu.unq.po2.sem;
 
+import java.time.LocalDate;
+import java.time.LocalTime;
 import java.util.Date;
 
 import ar.edu.unq.po2.sem.Compra;
@@ -9,8 +11,8 @@ public class RecargaCelular extends Compra {
 	private int monto;
 	private int celular;
 
-	public RecargaCelular(int nroControl, Date fechaYHora, PuntoDeVenta punto, int monto, int celular) {
-		super(nroControl, fechaYHora, punto);
+	public RecargaCelular(LocalDate fechaYHora, PuntoDeVenta punto, int monto, int celular) {
+		super(fechaYHora, punto);
 		this.monto = monto;
 		this.celular = celular;
 	}
@@ -22,5 +24,4 @@ public class RecargaCelular extends Compra {
 	public int getCelular() {
 		return celular;
 	}
-
 }

@@ -1,25 +1,34 @@
 package ar.edu.unq.po2.sem;
 
-import ar.edu.unq.po2.sem.Estacionamiento;
+import java.time.LocalTime;
 
 public class EstacionamientoApp extends Estacionamiento {
 	protected int celular;
 	
-	public EstacionamientoApp(String patente, int inicio, int fin, boolean vigente, int tarifa, int celular) {
+	public EstacionamientoApp(String patente, LocalTime inicio, LocalTime fin, boolean vigente, int celular) {
 		this.patente = patente;
 		this.horaInicio = inicio;
 		this.horaFin = fin;
 		this.esVigente = vigente;
-		this.tarifaPorHora = tarifa;
 		this.celular = celular;
 	}
 	
-	public boolean estaVigente() {
-		
+	public LocalTime horaMaximaFin(SEM sem, LocalTime horaInicio) {
+		int horasRestantes = cantidadDeHs(horaInicio);
+		int maximoHs = saldoDisponible(sem.getPrecioPorHora(), sem.getSaldoDe(this.getCelular()));
+		int horasPosibles = Math.min(horasRestantes, maximoHs);
+			return horaInicio.plusHours(horasPosibles);
+    }
+	
+	public int cantidadDeHs(LocalTime inicio) {
+		return 20 - inicio.getHour();
 	}
 	
-	public boolean esValido() {
-		
+	public int saldoDisponible(int tarifa, int saldo) {
+		return saldo / tarifa;
 	}
-
+	
+	public int getCelular() {
+		return celular;
+	}
 }
