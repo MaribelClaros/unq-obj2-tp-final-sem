@@ -8,6 +8,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Stream;
 
 
 public class SEM implements Publisher{
@@ -62,8 +63,8 @@ public class SEM implements Publisher{
 	
 	public String generarEstacionamientoApp(App app) {
 		if(this.consultarSaldo(app.getCelular()) >= this.getPrecioPorHora()) {
-			EstacionamientoApp estacionamiento = new EstacionamientoApp(app.getPatente(), LocalTime.now(), true, app.getCelular());
-			estacionamiento.horaMaximaFin(this, LocalTime.now());
+			EstacionamientoApp estacionamiento = new EstacionamientoApp(app.getPatente(), LocalTime.now(), app.getCelular());
+			estacionamiento.setHoraFin(estacionamiento.horaMaximaFin(this, LocalTime.now()));
 			this.estacionamientos.add(estacionamiento);
 			this.notificarInicioEstacionamiento(estacionamiento);
 			
@@ -89,13 +90,17 @@ public class SEM implements Publisher{
 
 
 	public String finalizarEstacionamientoViaApp(int nroCelular) {
-		Estacionamiento estacionamientoAFinalizar = this.estacionamientos.stream().filter(estacionamiento -> estacionamiento.getCelular() == nroCelular).findAny().orElseThrow();
+		EstacionamientoApp estacionamientoAFinalizar = this.estacionamientosPorApp().filter(estacionamiento -> estacionamiento.getCelular() == nroCelular).findAny().orElseThrow();
 		estacionamientoAFinalizar.setHoraFin(LocalTime.now());
-		estacionamientoAFinalizar.setVigente(false);
+		estacionamientoAFinalizar.setEstaVigente(false);
 		this.descontarSaldoDeEstacionamiento(estacionamientoAFinalizar.getHoraInicio(), estacionamientoAFinalizar.getHoraFin(), nroCelular);
     
 		this.notificarFinEstacionamiento(estacionamientoAFinalizar);
 		return this.mostrarInformacionFinEstacionamiento(estacionamientoAFinalizar);
+	}
+	
+	private Stream<EstacionamientoApp> estacionamientosPorApp() {
+		return this.estacionamientos.stream().filter(EstacionamientoApp.class::isInstance).map(estacionamiento -> (EstacionamientoApp) estacionamiento);
 	}
 	
 	private void descontarSaldoDeEstacionamiento(LocalTime inicio, LocalTime fin, int nroCelular) {
@@ -126,12 +131,9 @@ public class SEM implements Publisher{
 	}
 
 	public boolean consultarEstacionamientoVigente(String patente) {
-		Optional<Estacionamiento> estacionamientoAConsultar = this.estacionamientos.stream().filter(estacionamiento -> estacionamiento.getPatente() == patente).findFirst();
-		if (estacionamientoAConsultar.isPresent()) {
-			return estacionamientoAConsultar.estaVigente();
-		} else {
-			return false;
-		}
+		Estacionamiento estacionamientoAConsultar = this.estacionamientos.stream().filter(estacionamiento -> estacionamiento.getPatente() == patente).findAny().orElseThrow();
+		return estacionamientoAConsultar.estaVigente();
+
 	}
 	
 	public void altaInfraccion(Inspector inspector, String patente) {
@@ -149,7 +151,7 @@ public class SEM implements Publisher{
 		this.celulares.put(recarga.getCelular(), this.consultarSaldo(recarga.getCelular()) + recarga.getMonto());
 		this.compras.add(recarga);
 	}
-
+	
 
 	@Override
 	public void suscribirse(Entidad entidad) {
