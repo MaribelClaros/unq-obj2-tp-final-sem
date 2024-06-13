@@ -6,23 +6,24 @@ public class App {
 	private boolean estadoGPS = false;
 	private Modo modo;
 	private EstadoMovimiento estado;
+	private SEM sem;
 	
-	public App (int celular, String patente, boolean gps, Modo modo, EstadoMovimiento estado) {
+	public App (int celular, String patente, boolean gps, Modo modo, EstadoMovimiento estado, SEM sem) {
 		this.celular = celular;
 		this.patente = patente;
 		this.estadoGPS = gps;
 		this.modo = modo;
 		this.estado = estado;
+		this.sem = sem;
 	}
 	
-	public void iniciarEstacionamiento(SEM sem) {
-		sem.generarEstacionamientoApp(this);
+	public void iniciarEstacionamiento() {
+		this.sem.generarEstacionamientoApp(this);
         setEstado(Walking);
-        setModo(Automático);
 	}
 	
-	public void finalizarEstacionamiento(SEM sem) {
-		sem.finalizarEstacionamientoViaApp(this.getCelular());
+	public void finalizarEstacionamiento() {
+		this.sem.finalizarEstacionamientoViaApp(this.getCelular());
 	}
 	
 	public void setEstado(EstadoMovimiento e) {
