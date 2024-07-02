@@ -4,8 +4,8 @@ import java.time.LocalTime;
 import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Stream;
 
 
@@ -16,7 +16,7 @@ public class SEM implements Publisher{
 	private List<ZonaDeEstacionamiento> zonaDeEstacionamientos;
 	private List<Estacionamiento> estacionamientos;
 	private List<Infraccion> infracciones;
-	private HashMap<Integer, Integer> celulares;
+	private List<Celular> celulares;
 	private List<Entidad> suscriptores;
 	private List<Compra> compras;
 	
@@ -24,7 +24,7 @@ public class SEM implements Publisher{
 		this.zonaDeEstacionamientos = zonaDeEstacionamientos;
 		this.estacionamientos = new ArrayList<Estacionamiento>();
 		this.infracciones = new ArrayList<Infraccion>();
-		this.celulares = new HashMap<>();
+		this.celulares = new ArrayList<Celular>();
 		this.suscriptores =  new ArrayList<Entidad>();
 		this.compras = new ArrayList<Compra>();
 	}
@@ -50,7 +50,7 @@ public class SEM implements Publisher{
 		return this.compras;
 	}
 	
-	public HashMap<Integer, Integer> getCelulares() {
+	public List<Celular> getCelulares() {
 		return this.celulares;
 	}
 	
@@ -60,9 +60,9 @@ public class SEM implements Publisher{
 	}
 	
 	public String generarEstacionamientoApp(App app) {
-		if(this.consultarSaldo(app.getCelular()) >= this.getPrecioPorHora()) {
-			EstacionamientoApp estacionamiento = new EstacionamientoApp(app.getPatente(), LocalTime.now(), app.getCelular());
-			estacionamiento.setHoraFin(estacionamiento.horaMaximaFin(this, LocalTime.now()));
+		if(app.consultarSaldo() >= this.getPrecioPorHora()) {
+			EstacionamientoApp estacionamiento = new EstacionamientoApp(app.getPatente(), LocalTime.now(), app.getNroCelular());
+			estacionamiento.setHoraFin(estacionamiento.horaMaximaFin(this, LocalTime.now(), app.consultarSaldo()));
 			this.estacionamientos.add(estacionamiento);
 			this.notificarInicioEstacionamiento(estacionamiento);
 			
@@ -102,8 +102,9 @@ public class SEM implements Publisher{
 	}
 	
 	private void descontarSaldoDeEstacionamiento(LocalTime inicio, LocalTime fin, int nroCelular) {
+		Celular celularADescontar = this.celulares.stream().filter(celular -> celular.getNumero() == nroCelular).findAny().orElseThrow();
 		int duracion = this.calcularDuracionEstacionamiento(inicio, fin);
-		this.celulares.put(nroCelular, this.celulares.get(nroCelular) - this.calcularCostoEstacionamiento(duracion));
+		celularADescontar.descontarSaldo(this.calcularCostoEstacionamiento(duracion));
 	}
 
 
@@ -122,10 +123,6 @@ public class SEM implements Publisher{
 	
 	private int calcularDuracionEstacionamiento(LocalTime inicio, LocalTime fin) {
 		return (int) inicio.until(fin, ChronoUnit.HOURS);
-	}
-	
-	public int consultarSaldo(int nroCelular) {
-		return (celulares.containsKey(nroCelular)) ? celulares.get(nroCelular) : 0;
 	}
 
 	public boolean consultarEstacionamientoVigente(String patente) {
@@ -146,8 +143,14 @@ public class SEM implements Publisher{
 	}
 	
 	public void nuevaRecargaCelular(RecargaCelular recarga) {
-		this.celulares.put(recarga.getCelular(), this.consultarSaldo(recarga.getCelular()) + recarga.getMonto());
-		this.compras.add(recarga);
+		Optional<Celular> nroAConsultar = this.celulares.stream().filter(celular -> celular.getNumero() == recarga.getCelular()).findFirst();
+		if (nroAConsultar.isPresent()) {
+			nroAConsultar.get().aumentarSaldo(recarga.getMonto());
+		} else {
+			Celular nuevoCelular = new Celular(recarga.getCelular());
+			nuevoCelular.aumentarSaldo(recarga.getMonto());
+			celulares.add(nuevoCelular);
+		}
 	}
 	
 
