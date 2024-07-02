@@ -1,14 +1,14 @@
 package ar.edu.unq.po2.sem;
 
 public class App implements MovementSensor {
-	private final int celular;
+	private Celular celular;
 	private final String patente;
 	private boolean estadoGPS = false;
 	private Modo modo;
 	private EstadoMovimiento estado;
 	private SEM sem;
 	
-	public App (int celular, String patente, EstadoMovimiento estado, SEM sem) {
+	public App (Celular celular, String patente, EstadoMovimiento estado, SEM sem) {
 		this.celular = celular;
 		this.patente = patente;
 		this.estadoGPS = false;
@@ -22,7 +22,11 @@ public class App implements MovementSensor {
 	}
 	
 	public void finalizarEstacionamiento() {
-		this.sem.finalizarEstacionamientoViaApp(this.getCelular());
+		this.sem.finalizarEstacionamientoViaApp(this.getNroCelular());
+	}
+	
+	public int consultarSaldo() {
+		return this.celular.getSaldo();
 	}
 	
 	public void setEstado(EstadoMovimiento e) {
@@ -41,8 +45,8 @@ public class App implements MovementSensor {
 		return modo;
 	}
 
-	public int getCelular() {
-		return celular;
+	public int getNroCelular() {
+		return celular.getNumero();
 	}
 	
 	public String getPatente() {

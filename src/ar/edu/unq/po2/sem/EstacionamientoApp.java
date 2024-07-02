@@ -12,9 +12,9 @@ public class EstacionamientoApp extends Estacionamiento {
 		this.celular = celular;
 	}
 	
-	public LocalTime horaMaximaFin(SEM sem, LocalTime horaInicio) {
+	public LocalTime horaMaximaFin(SEM sem, LocalTime horaInicio, int saldo) {
 		int horasRestantes = cantidadDeHs(horaInicio);
-		int maximoHs = saldoDisponible(sem.getPrecioPorHora(), sem.consultarSaldo(this.getCelular()));
+		int maximoHs = saldoDisponible(sem.getPrecioPorHora(), saldo);
 		int horasPosibles = Math.min(horasRestantes, maximoHs);
 			return horaInicio.plusHours(horasPosibles);
     }

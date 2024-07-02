@@ -29,12 +29,14 @@ class App {
     + {static} App(int, String, EstadoMovimiento, SEM): void
     + iniciarEstacionamiento(): void
     + finalizarEstacionamientos(): void
+    + consultarSaldo(): int
     + setEstado(EstadoMovimiento): void
     + setEstadoGPS(bool): bool
     + setModo(Modo): void
     + getModo(): Modo
-    + getCelular(): int
+    + getNroCelular(): int
     + getPatente(): String
+    + consultarSaldo(int nroCelular):  int
 }
 
 class Automatico {
@@ -159,7 +161,6 @@ class SEM {
     + generarEstacionamientoApp(App): String
     + agregarEstacionamientoPuntoVenta(EstacionamientoPuntoVenta)
     + finalizarEstacionamientoViaApp(int nroCelular): String
-    + consultarSaldo(int nroCelular):  int
     + consultarEstacionamientoVigente(String patente): bool
     + altaInfraccion(Inspector, String patente)
     + nuevaCompraPuntual(CompraPuntual)
@@ -200,6 +201,17 @@ interface MovementSensor {
     + walking(): void
 }
 
+class Celular {
+    - numero: int
+    - saldo: int
+
+    + {static} Celular(int): Celular
+    + getNumero(): int
+    + getSaldo(): int
+    + aumentarSaldo(int): void
+    + descontarSaldo(int): void
+}
+
 App ..|> MovementSensor
 App --> EstadoMovimiento: estado
 App ..> EstacionamientoApp
@@ -208,6 +220,7 @@ App <-- Driving: app
 App <-- Walking: app
 App --> Modo: modo
 App <-- Modo: app
+App --> Celular:celular
 Compra <|-- CompraPuntual
 Compra <|-- RecargaCelular
 Infraccion --> Inspector: inspector
@@ -227,6 +240,7 @@ SEM --> "*" Compra: compras
 SEM --> "*" Estacionamiento: estacionamientos
 SEM --> "*" ZonaEstacionamiento: zonas
 SEM ..|> Publisher
+SEM --> "*" Celular: celulares
 ZonaEstacionamiento --> "*" PuntoVenta: puntosVenta
 ZonaEstacionamiento --> Inspector: inspector
 
