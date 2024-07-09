@@ -34,6 +34,14 @@ public class SEM implements Publisher{
 		return precioPorHora;
 	}
 	
+	public LocalTime getInicioFranjaHoraria() {
+		return inicioFranjaHoraria;
+	}
+	
+	public LocalTime getFinFranjaHoraria() {
+		return finFranjaHoraria;
+	}
+ 	
 	public List<ZonaDeEstacionamiento> getZonasDeEstacionamiento() {
 		return this.zonaDeEstacionamientos;
 	}
@@ -75,6 +83,7 @@ public class SEM implements Publisher{
 	
 	public void agregarEstacionamientoPuntoVenta(EstacionamientoPuntoVenta estacionamiento) {
 		this.estacionamientos.add(estacionamiento);
+		this.notificarInicioEstacionamiento(estacionamiento);
 	}
 	
 	
