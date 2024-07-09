@@ -29,6 +29,10 @@ public class App implements MovementSensor {
 		return this.celular.getSaldo();
 	}
 	
+	public void aumentarSaldo(int saldoAAumentar) {
+		this.celular.aumentarSaldo(saldoAAumentar);
+	}
+	
 	public void setEstado(EstadoMovimiento e) {
 		this.estado = e; 
 	}

@@ -10,9 +10,9 @@ public class PuntoDeVenta {
 		this.zona = z;
 	}
 	
-	public void recargarCelular(SEM sem, int celular, int monto) {
-		RecargaCelular recarga = new RecargaCelular (LocalDate.now(), this, monto, celular);
-		sem.nuevaRecargaCelular(recarga);
+	public void recargarCelular(SEM sem, App app, int monto) {
+		RecargaCelular recarga = new RecargaCelular (LocalDate.now(), this, monto, app.getNroCelular());
+		sem.nuevaRecargaCelular(recarga, app);
 	}
 	
 	public void comprarEstacionamiento(SEM sem, int cantHoras, String patente) {

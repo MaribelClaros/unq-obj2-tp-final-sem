@@ -62,6 +62,15 @@ public class SEM implements Publisher{
 		return this.celulares;
 	}
 	
+	public List<Entidad> getSuscriptores() {
+		return this.suscriptores;
+	}
+	
+	
+	public void agregarZonaDeEstacionamiento(ZonaDeEstacionamiento zona) {
+		this.zonaDeEstacionamientos.add(zona);
+	}
+	
 	public void finalizarTodosLosEstacionamientos() {
 		List<Estacionamiento> estacionamientosVigentes = this.estacionamientos.stream().filter(estacionamiento -> estacionamiento.estaVigente()).toList();
 		estacionamientosVigentes.stream().forEach(estacionamiento -> estacionamiento.setEstaVigente(false));
@@ -151,15 +160,18 @@ public class SEM implements Publisher{
 		this.compras.add(compra);
 	}
 	
-	public void nuevaRecargaCelular(RecargaCelular recarga) {
+	public void nuevaRecargaCelular(RecargaCelular recarga, App app) {
 		Optional<Celular> nroAConsultar = this.celulares.stream().filter(celular -> celular.getNumero() == recarga.getCelular()).findFirst();
 		if (nroAConsultar.isPresent()) {
 			nroAConsultar.get().aumentarSaldo(recarga.getMonto());
+			
 		} else {
 			Celular nuevoCelular = new Celular(recarga.getCelular());
 			nuevoCelular.aumentarSaldo(recarga.getMonto());
 			celulares.add(nuevoCelular);
 		}
+		app.aumentarSaldo(recarga.getMonto());
+		this.compras.add(recarga);
 	}
 	
 
