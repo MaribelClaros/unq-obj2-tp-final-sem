@@ -4,9 +4,9 @@ import java.time.LocalDate;
 import java.time.LocalTime;
 
 public class PuntoDeVenta {
-	private String zona;
+	private ZonaDeEstacionamiento zona;
 	
-	public PuntoDeVenta(String z) {
+	public PuntoDeVenta(ZonaDeEstacionamiento z) {
 		this.zona = z;
 	}
 	

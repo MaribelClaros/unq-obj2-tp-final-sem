@@ -21,6 +21,10 @@ public class ZonaDeEstacionamiento {
 	public String getInspector() {
 		return inspector.getNombreYApellido();
 	}
+	
+	public void agregarPuntoDeVenta(PuntoDeVenta punto) {
+		this.puntosDeVenta.add(punto);
+	}
 
 	public List<PuntoDeVenta> getPuntosDeVenta() {
 		return puntosDeVenta;

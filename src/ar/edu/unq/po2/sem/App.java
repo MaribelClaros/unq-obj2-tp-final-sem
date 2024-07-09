@@ -49,6 +49,10 @@ public class App implements MovementSensor {
 		return celular.getNumero();
 	}
 	
+	public void setNroCelular(int numero) {
+		this.celular.setNumero(numero);
+	}
+	
 	public String getPatente() {
 		return patente;
 	}
