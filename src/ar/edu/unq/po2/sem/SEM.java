@@ -78,8 +78,8 @@ public class SEM implements Publisher{
 	
 	public String generarEstacionamientoApp(App app) {
 		if(app.consultarSaldo() >= this.getPrecioPorHora()) {
-			EstacionamientoApp estacionamiento = new EstacionamientoApp(app.getPatente(), LocalTime.now(), app.getNroCelular());
-			estacionamiento.setHoraFin(estacionamiento.horaMaximaFin(this, LocalTime.now(), app.consultarSaldo()));
+			EstacionamientoApp estacionamiento = new EstacionamientoApp(app.getPatente(), LocalTime.now(), app.getCelular());
+			estacionamiento.setHoraFin(estacionamiento.horaMaximaFin(this, LocalTime.now()));
 			this.estacionamientos.add(estacionamiento);
 			this.notificarInicioEstacionamiento(estacionamiento);
 			
@@ -106,7 +106,7 @@ public class SEM implements Publisher{
 
 
 	public String finalizarEstacionamientoViaApp(int nroCelular) {
-		EstacionamientoApp estacionamientoAFinalizar = this.estacionamientosPorApp().filter(estacionamiento -> estacionamiento.getCelular() == nroCelular).findAny().orElseThrow();
+		EstacionamientoApp estacionamientoAFinalizar = this.estacionamientosPorApp().filter(estacionamiento -> estacionamiento.getCelular().getNumero() == nroCelular).findAny().orElseThrow();
 		estacionamientoAFinalizar.setHoraFin(LocalTime.now());
 		estacionamientoAFinalizar.setEstaVigente(false);
 		this.descontarSaldoDeEstacionamiento(estacionamientoAFinalizar.getHoraInicio(), estacionamientoAFinalizar.getHoraFin(), nroCelular);

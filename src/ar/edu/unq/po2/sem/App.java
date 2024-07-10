@@ -37,8 +37,16 @@ public class App implements MovementSensor {
 		this.estado = e; 
 	}
 	
+	public EstadoMovimiento getEstadoMovimiento() {
+		return this.estado;
+	}
+	
     public void setEstadoGPS(boolean estado) {
     	this.estadoGPS = estado;
+	}
+    
+    public boolean getEstadoGPS() {
+    	return this.estadoGPS;
 	}
 	
 	public void setModo(Modo m) {
@@ -47,6 +55,10 @@ public class App implements MovementSensor {
 
 	public Modo getModo() {
 		return modo;
+	}
+	
+	public Celular getCelular() {
+		return this.celular;
 	}
 
 	public int getNroCelular() {

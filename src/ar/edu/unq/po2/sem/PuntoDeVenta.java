@@ -18,7 +18,7 @@ public class PuntoDeVenta {
 	public void comprarEstacionamiento(SEM sem, int cantHoras, String patente) {
 		CompraPuntual compra = new CompraPuntual(LocalDate.now(), this, cantHoras, patente);		
 		sem.nuevaCompraPuntual(compra);
-		EstacionamientoPuntoVenta estacionamiento = new EstacionamientoPuntoVenta(patente, LocalTime.now(), this.horaDeFinDeCompra(cantHoras), true);
+		EstacionamientoPuntoVenta estacionamiento = new EstacionamientoPuntoVenta(patente, LocalTime.now(), this.horaDeFinDeCompra(cantHoras));
 		sem.agregarEstacionamientoPuntoVenta(estacionamiento);
 	}
 	

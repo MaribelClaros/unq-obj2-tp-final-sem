@@ -3,18 +3,18 @@ package ar.edu.unq.po2.sem;
 import java.time.LocalTime;
 
 public class EstacionamientoApp extends Estacionamiento {
-	protected int celular;
+	protected Celular celular;
 	
-	public EstacionamientoApp(String patente, LocalTime inicio, int celular) {
+	public EstacionamientoApp(String patente, LocalTime inicio, Celular celular) {
 		this.patente = patente;
 		this.horaInicio = inicio;
 		this.esVigente = true;
 		this.celular = celular;
 	}
 	
-	public LocalTime horaMaximaFin(SEM sem, LocalTime horaInicio, int saldo) {
+	public LocalTime horaMaximaFin(SEM sem, LocalTime horaInicio) {
 		int horasRestantes = cantidadDeHs(horaInicio);
-		int maximoHs = saldoDisponible(sem.getPrecioPorHora(), saldo);
+		int maximoHs = saldoDisponible(sem.getPrecioPorHora(), celular.getSaldo());
 		int horasPosibles = Math.min(horasRestantes, maximoHs);
 			return horaInicio.plusHours(horasPosibles);
     }
@@ -27,7 +27,7 @@ public class EstacionamientoApp extends Estacionamiento {
 		return saldo / tarifa;
 	}
 	
-	public int getCelular() {
-		return celular;
+	public Celular getCelular() {
+		return this.celular;
 	}
 }
