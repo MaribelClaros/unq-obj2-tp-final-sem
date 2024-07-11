@@ -3,28 +3,28 @@ package ar.edu.unq.po2.sem;
 public class App implements MovementSensor {
 	private Celular celular;
 	private final String patente;
-	private boolean estadoGPS = false;
+	private EstadoGPS estadoGPS;
 	private Modo modo;
-	private EstadoMovimiento estado;
+	private EstadoMovimiento estadoMovimiento;
 	private SEM sem;
 	
-	public App (Celular celular, String patente, EstadoMovimiento estado, SEM sem) {
+	public App (Celular celular, String patente, SEM sem) {
 		this.celular = celular;
 		this.patente = patente;
-		this.estadoGPS = false;
-		this.modo = new Manual(this);
-		this.estado = estado;
+		this.estadoGPS = new Encendido();
+		this.modo = new Manual();
+		this.estadoMovimiento = new Walking(this);
 		this.sem = sem;
 	}
-	
+
 	public void iniciarEstacionamiento() {
-		this.sem.generarEstacionamientoApp(this);
+		this.modo.iniciarEstacionamiento(this);
 	}
-	
+
 	public void finalizarEstacionamiento() {
-		this.sem.finalizarEstacionamientoViaApp(this.getNroCelular());
+		this.modo.finalizarEstacionamiento(this);
 	}
-	
+
 	public int consultarSaldo() {
 		return this.celular.getSaldo();
 	}
@@ -33,19 +33,19 @@ public class App implements MovementSensor {
 		this.celular.aumentarSaldo(saldoAAumentar);
 	}
 	
-	public void setEstado(EstadoMovimiento e) {
-		this.estado = e; 
+	public void setEstadoMovimiento(EstadoMovimiento e) {
+		this.estadoMovimiento = e;
 	}
 	
 	public EstadoMovimiento getEstadoMovimiento() {
-		return this.estado;
+		return this.estadoMovimiento;
 	}
 	
-    public void setEstadoGPS(boolean estado) {
+    public void setEstadoGPS(EstadoGPS estado) {
     	this.estadoGPS = estado;
 	}
     
-    public boolean getEstadoGPS() {
+    public EstadoGPS getEstadoGPS() {
     	return this.estadoGPS;
 	}
 	
@@ -75,15 +75,15 @@ public class App implements MovementSensor {
 
 	@Override
 	public void driving() {
-		if (this.estadoGPS) {
-			this.estado.driving();
-		}
+		this.estadoMovimiento.driving();
 	}
 
 	@Override
 	public void walking() {
-		if (this.estadoGPS) {
-			this.estado.walking();
-		}
+		this.estadoMovimiento.walking();
+	}
+
+	public SEM getSem() {
+		return this.sem;
 	}
 }

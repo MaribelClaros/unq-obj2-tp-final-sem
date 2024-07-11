@@ -1,7 +1,7 @@
 package ar.edu.unq.po2.sem;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertNotEquals;
 import static org.mockito.Mockito.*;
 
 import org.junit.jupiter.api.BeforeEach;
@@ -10,16 +10,32 @@ import org.junit.jupiter.api.Test;
 public class AppTest {
 	private App app;
 	private Celular celular;
-	private EstadoMovimiento estado;
+    private Modo modo;
 	private SEM sem;
 	
 	@BeforeEach
 	public void setUp() {
 		celular = mock(Celular.class);
-        estado = mock(EstadoMovimiento.class);
+        modo = mock(Modo.class);
         sem = mock(SEM.class);
-        app = new App(celular, "ABC123", estado, sem);
+        app = new App(celular, "ABC123", sem);
 	}
+
+    @Test
+    public void testIniciarEstacionamiento() {
+        app.setModo(modo);
+        app.iniciarEstacionamiento();
+
+        verify(modo, times(1)).iniciarEstacionamiento(app);
+    }
+
+    @Test
+    public void testFinalizarEstacionamiento() {
+        app.setModo(modo);
+        app.finalizarEstacionamiento();
+
+        verify(modo, times(1)).finalizarEstacionamiento(app);
+    }
 
     @Test
     public void testConsultarSaldo() {
@@ -37,45 +53,32 @@ public class AppTest {
     }
 
     @Test
-    public void testIniciarEstacionamiento() {
-        app.iniciarEstacionamiento();
+    public void testEstadoMovimiento() {
+        assertEquals(Walking.class, app.getEstadoMovimiento().getClass());
+        Driving driving = mock(Driving.class);
+        app.setEstadoMovimiento(driving);
 
-        verify(sem, times(1)).generarEstacionamientoApp(app);
+        assertNotEquals(Walking.class, app.getEstadoMovimiento().getClass());
+        assertEquals(driving, app.getEstadoMovimiento());
     }
 
     @Test
-    public void testFinalizarEstacionamiento() {
-        app.finalizarEstacionamiento();
-
-        verify(sem, times(1)).finalizarEstacionamientoViaApp(app.getNroCelular());
-    }
-
-    @Test
-    public void testSetEstadoGPS() {
-        app.setEstadoGPS(true);
-
-        assertTrue(app.getEstadoGPS());
-    }
-
-    @Test
-    public void testSetEstado() {
-        app.setEstado(estado);
-
-        assertEquals(estado, app.getEstadoMovimiento());
-    }
-
-    @Test
-    public void testSetModo() {
+    public void testModo() {
+        assertEquals(Manual.class, app.getModo().getClass());
     	Modo automatico = mock(Automatico.class);
-        when(automatico.toString()).thenReturn("Automatico");
         app.setModo(automatico);
 
-        assertEquals("Automatico", app.getModo().toString());
+        assertNotEquals(Manual.class, app.getModo().getClass());
+        assertEquals(automatico, app.getModo());
     }
 
     @Test
-    public void testGetModo() {
-    	assertEquals(Manual.class, app.getModo().getClass());
+    public void testEstadoGPS() {
+        assertEquals(Encendido.class, app.getEstadoGPS().getClass());
+        EstadoGPS estadoGPS = mock(Apagado.class);
+        app.setEstadoGPS(estadoGPS);
+        assertNotEquals(Encendido.class, app.getEstadoGPS().getClass());
+        assertEquals(estadoGPS, app.getEstadoGPS());
     }
 
     @Test

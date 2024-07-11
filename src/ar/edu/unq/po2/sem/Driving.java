@@ -14,7 +14,11 @@ public class Driving implements EstadoMovimiento {
     @Override
     public void walking() {
         EstadoMovimiento nuevoEstado = new Walking(this.app);
-        this.app.setEstado(nuevoEstado);
-        this.app.getModo().iniciarEstacionamiento();
+        this.app.setEstadoMovimiento(nuevoEstado);
+    }
+
+    @Override
+    public boolean isDriving() {
+        return true;
     }
 }

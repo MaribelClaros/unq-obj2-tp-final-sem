@@ -39,7 +39,7 @@ public class SEMTest {
 		sem.agregarZonaDeEstacionamiento(zonaDeEstacionamiento);
 		puntoDeVenta = new PuntoDeVenta(zonaDeEstacionamiento);
 		celular = new Celular(12345678);
-		app = new App(celular, "ABC 123", null, sem);
+		app = new App(celular, "ABC 123", sem);
 		recarga = new RecargaCelular(LocalDate.now(), puntoDeVenta, 1000, 12345678);
 		
 	}
@@ -132,7 +132,7 @@ public class SEMTest {
 	
 	@Test
 	void testFinalizarTodosLosEstacionamientos() {
-		App nuevaApp = new App(celular, "ABC 333", null, sem);
+		App nuevaApp = new App(celular, "ABC 333", sem);
 		sem.nuevaRecargaCelular(recarga, app);
 		sem.nuevaRecargaCelular(recarga, nuevaApp);
 		sem.generarEstacionamientoApp(app);

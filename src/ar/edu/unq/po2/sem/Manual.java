@@ -1,17 +1,15 @@
 package ar.edu.unq.po2.sem;
 
 public class Manual extends Modo {
-    public Manual(App app) {
-        super(app);
-    }
-
     @Override
-    public void iniciarEstacionamiento() {
+    public void iniciarEstacionamiento(App app) {
         this.notificar("Posible inicio de Estacionamiento");
+        app.getSem().generarEstacionamientoApp(app);
     }
 
     @Override
-    public void finalizarEstacionamiento() {
+    public void finalizarEstacionamiento(App app) {
         this.notificar("Posible fin de Estacionamiento");
+        app.getSem().finalizarEstacionamientoViaApp(app.getNroCelular());
     }
 }

@@ -8,10 +8,10 @@ public class modosTests {
     @Test
     public void testModoManual() {
         App app = mock(App.class);
-        Manual manual = new Manual(app);
+        Manual manual = new Manual();
 
-        manual.iniciarEstacionamiento();;
-        manual.finalizarEstacionamiento();
+        manual.iniciarEstacionamiento(app);;
+        manual.finalizarEstacionamiento(app);
 
         verify(app, times(0)).iniciarEstacionamiento();
         verify(app, times(0)).finalizarEstacionamiento();
@@ -20,10 +20,10 @@ public class modosTests {
     @Test
     public void testModoAutomatic() {
         App app = mock(App.class);
-        Automatico automatic = new Automatico(app);
+        Automatico automatic = new Automatico();
 
-        automatic.iniciarEstacionamiento();
-        automatic.finalizarEstacionamiento();
+        automatic.iniciarEstacionamiento(app);
+        automatic.finalizarEstacionamiento(app);
 
         verify(app, times(1)).iniciarEstacionamiento();
         verify(app, times(1)).finalizarEstacionamiento();

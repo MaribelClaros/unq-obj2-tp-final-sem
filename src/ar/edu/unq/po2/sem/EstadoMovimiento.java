@@ -4,4 +4,6 @@ public interface EstadoMovimiento {
     void driving();
 
     void walking();
+
+    public boolean isDriving();
 }
