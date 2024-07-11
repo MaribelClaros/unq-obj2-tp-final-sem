@@ -1,6 +1,15 @@
 @startuml
 'https://plantuml.com/class-diagram
 
+abstract class Compra {
+    # {static} nroControl: int
+    # fechaYHora: LocalDate
+    # puntoDeVenta: PuntoDeVenta
+
+    + {static} Compra(LocalDate fechaYHora, PuntoDeVenta punto): void
+    - generarNroControl(): int
+}
+
 abstract class Estacionamiento {
     - patente: int
     - horaInicio: int
@@ -19,13 +28,16 @@ abstract class Estacionamiento {
 abstract class Modo {
     + {static} Modo(App): void
     + notificar(): void
-    + {abstract} iniciarEstacionamiento(): void
-    + {abstract} finalizarEstacionamientos(): void
+    + {abstract} iniciarEstacionamiento(bool): void
+    + {abstract} finalizarEstacionamientos(bool): void
+}
+
+class Apagado {
+    + cambiar(): void
+    + estaEncendido(): bool
 }
 
 class App {
-    - estadoGPS: bool
-
     + {static} App(int, String, EstadoMovimiento, SEM): void
     + iniciarEstacionamiento(): void
     + finalizarEstacionamientos(): void
@@ -45,13 +57,15 @@ class Automatico {
     + {abstract} finalizarEstacionamientos(): void
 }
 
-abstract class Compra {
-    # {static} nroControl: int
-    # fechaYHora: LocalDate
-    # puntoDeVenta: PuntoDeVenta
+class Celular {
+    - numero: int
+    - saldo: int
 
-    + {static} Compra(LocalDate fechaYHora, PuntoDeVenta punto): void
-    - generarNroControl(): int
+    + {static} Celular(int): Celular
+    + getNumero(): int
+    + getSaldo(): int
+    + aumentarSaldo(int): void
+    + descontarSaldo(int): void
 }
 
 class CompraPuntual {
@@ -67,6 +81,11 @@ class Driving {
     + {static} Driving(App): Driving
     + driving(): void
     + walking(): void
+}
+
+class Encendido {
+    + cambiar(): void
+    + estaEncendido(): bool
 }
 
 class EstacionamientoApp {
@@ -112,13 +131,6 @@ class Manual {
     + {static} Manual(App): Manual
     + {abstract} iniciarEstacionamiento(): void
     + {abstract} finalizarEstacionamientos(): void
-}
-
-interface Publisher {
-    + suscribirse(Entidad)
-    + desuscribirse(Entidad)
-    + notificarInicioEstacionamiento(Estacionamiento)
-    + notificarFinEstacionamiento(Estacionamiento)
 }
 
 class PuntoVenta {
@@ -191,6 +203,11 @@ interface Entidad {
     + finEstacionamiento(Estacionamiento estacionamiento)
 }
 
+interface EstadoGPS {
+    + {abstract} cambiar(): void
+    + {abstract} estaEncendido(): bool
+}
+
 interface EstadoMovimiento {
     + driving(): void
     + walking(): void
@@ -201,21 +218,20 @@ interface MovementSensor {
     + walking(): void
 }
 
-class Celular {
-    - numero: int
-    - saldo: int
-
-    + {static} Celular(int): Celular
-    + getNumero(): int
-    + getSaldo(): int
-    + aumentarSaldo(int): void
-    + descontarSaldo(int): void
+interface Publisher {
+    + suscribirse(Entidad)
+    + desuscribirse(Entidad)
+    + notificarInicioEstacionamiento(Estacionamiento)
+    + notificarFinEstacionamiento(Estacionamiento)
 }
 
 App ..|> MovementSensor
-App --> EstadoMovimiento: estado
+App --> EstadoGPS: estadoGPS
+App --> EstadoMovimiento: estadoMovimiento
 App ..> EstacionamientoApp
 App --> SEM: sem
+App <-- Apagado: app
+App <-- Encendido: app
 App <-- Driving: app
 App <-- Walking: app
 App --> Modo: modo
@@ -228,6 +244,8 @@ Infraccion --> ZonaEstacionamiento: zona
 Inspector --> SEM
 Estacionamiento <|-- EstacionamientoApp
 Estacionamiento <|-- EstacionamientoPuntoVenta
+EstadoGPS <|.. Apagado
+EstadoGPS <|.. Encendido
 EstadoMovimiento <|.. Driving
 EstadoMovimiento <|.. Walking
 Modo <|-- Automatico
