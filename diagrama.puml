@@ -26,7 +26,7 @@ abstract class Estacionamiento {
 }
 
 abstract class Modo {
-    + {static} Modo(App): void
+    + {static} Modo: void
     + notificar(): void
     + {abstract} iniciarEstacionamiento(bool): void
     + {abstract} finalizarEstacionamientos(bool): void
@@ -39,8 +39,8 @@ class Apagado {
 
 class App {
     + {static} App(int, String, EstadoMovimiento, SEM): void
-    + iniciarEstacionamiento(): void
-    + finalizarEstacionamientos(): void
+    + iniciarEstacionamiento(App): void
+    + finalizarEstacionamiento(App): void
     + consultarSaldo(): int
     + setEstado(EstadoMovimiento): void
     + setEstadoGPS(bool): bool
@@ -48,13 +48,15 @@ class App {
     + getModo(): Modo
     + getNroCelular(): int
     + getPatente(): String
-    + consultarSaldo(int nroCelular):  int
+    + consultarSaldo(int nroCelular): int
+    + walking(): void
+    + driving(): void
 }
 
 class Automatico {
-    + {static} Automatico(App): Automatico
-    + {abstract} iniciarEstacionamiento(): void
-    + {abstract} finalizarEstacionamientos(): void
+    + {static} Automatico: Automatico
+    + {abstract} iniciarEstacionamiento(App): void
+    + {abstract} finalizarEstacionamiento(App): void
 }
 
 class Celular {
@@ -81,6 +83,7 @@ class Driving {
     + {static} Driving(App): Driving
     + driving(): void
     + walking(): void
+    + isDriving(): boolean
 }
 
 class Encendido {
@@ -128,9 +131,9 @@ class Inspector {
 }
 
 class Manual {
-    + {static} Manual(App): Manual
-    + {abstract} iniciarEstacionamiento(): void
-    + {abstract} finalizarEstacionamientos(): void
+    + {static} Manual(): Manual
+    + {abstract} iniciarEstacionamiento(App): void
+    + {abstract} finalizarEstacionamiento(App): void
 }
 
 class PuntoVenta {
@@ -187,6 +190,7 @@ class Walking {
     + {static} Walking(App): Walking
     + driving(): void
     + walking(): void
+    + isDriving(): boolean
 }
 
 class ZonaEstacionamiento {
@@ -211,6 +215,7 @@ interface EstadoGPS {
 interface EstadoMovimiento {
     + driving(): void
     + walking(): void
+    + isDriving(): boolean
 }
 
 interface MovementSensor {
@@ -228,14 +233,13 @@ interface Publisher {
 App ..|> MovementSensor
 App --> EstadoGPS: estadoGPS
 App --> EstadoMovimiento: estadoMovimiento
-App ..> EstacionamientoApp
 App --> SEM: sem
-App <-- Apagado: app
-App <-- Encendido: app
-App <-- Driving: app
-App <-- Walking: app
+App <.. Apagado: app
+App <.. Encendido: app
+App <.. Driving: app
+App <.. Walking: app
 App --> Modo: modo
-App <-- Modo: app
+App <.. Modo: app
 App --> Celular:celular
 Compra <|-- CompraPuntual
 Compra <|-- RecargaCelular
@@ -246,8 +250,6 @@ Estacionamiento <|-- EstacionamientoApp
 Estacionamiento <|-- EstacionamientoPuntoVenta
 EstadoGPS <|.. Apagado
 EstadoGPS <|.. Encendido
-EstadoMovimiento <|.. Driving
-EstadoMovimiento <|.. Walking
 Modo <|-- Automatico
 Modo <|-- Manual
 SEM --> Entidad: suscriptores "*"
@@ -261,5 +263,7 @@ SEM ..|> Publisher
 SEM --> "*" Celular: celulares
 ZonaEstacionamiento --> "*" PuntoVenta: puntosVenta
 ZonaEstacionamiento --> Inspector: inspector
+EstadoMovimiento <|.. Driving
+EstadoMovimiento <|.. Walking
 
 @enduml

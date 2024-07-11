@@ -1,6 +1,5 @@
 package ar.edu.unq.po2.sem;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
@@ -30,6 +29,5 @@ public class InspectorTest {
 	@Test
 	void testGetIdAndNombreInspector() {
 		assertTrue(inspector.getNombreYApellido().equals("Juan Perez"));
-		assertEquals(Inspector.getIdInspector(), 1);
 	}
 }

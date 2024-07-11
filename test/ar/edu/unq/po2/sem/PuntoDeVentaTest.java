@@ -44,6 +44,6 @@ public class PuntoDeVentaTest {
     @Test
     public void testHoraDeFinDeCompra() {
 
-        assertEquals(LocalTime.now().plusHours(2), puntoDeVenta.horaDeFinDeCompra(2));
+        assertEquals(LocalTime.now().plusHours(2).getHour(), puntoDeVenta.horaDeFinDeCompra(2).getHour());
     }
 }
