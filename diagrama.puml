@@ -38,7 +38,7 @@ class Apagado {
 }
 
 class App {
-    + {static} App(int, String, EstadoMovimiento, SEM): void
+    + {static} App(Celular, String, EstadoMovimiento, SEM): void
     + iniciarEstacionamiento(App): void
     + finalizarEstacionamiento(App): void
     + consultarSaldo(): int
@@ -156,7 +156,6 @@ class SEM {
     - {static} precioPorHora: int
     - {static} inicioFranjaHoraria: LocalTime
     - {static} finFranjaHoraria: LocalTime
-    - celulares: HashMap<Integer, Integer>
 
     + {static} SEM(List<ZonaDeEstacionamiento>): SEM
     - mostrarInformacionEstacionamiento(EstacionamientoApp): String
@@ -167,11 +166,15 @@ class SEM {
     - calcularDuracionEstacionamiento(LocalTime inicio, LocalTime fin): int
     - estacionamientoPorApp(): Stream<EstacionamientoApp>
     + getPrecioPorHora(): int
+    + getInicioFranjaHoraria(): LocalTime 
+    + getFinFranjaHoraria(): LocalTime 
     + getZonasDeEstacionamiento(): List<ZonaDeEstacionamiento>
     + getEstacionamientos(): List<Estacionamiento>
     + getInfracciones(): List<Infraccion>
     + getCompras(): List<Compra>
-    + getCelulares(): HashMap<Integer, Integer>
+    + getCelulares(): List<Celular>
+    + getSuscriptores(): List<Entidad>
+    + agregarZonaDeEstacionamiento(ZonaDeEstacionamiento): void
     + finalizarTodosLosEstacionamientos()
     + generarEstacionamientoApp(App): String
     + agregarEstacionamientoPuntoVenta(EstacionamientoPuntoVenta)
@@ -232,15 +235,13 @@ interface Publisher {
 
 App ..|> MovementSensor
 App --> EstadoGPS: estadoGPS
+App <.. EstadoGPS: app
 App --> EstadoMovimiento: estadoMovimiento
+App <.. EstadoMovimiento: app
 App --> SEM: sem
-App <.. Apagado: app
-App <.. Encendido: app
-App <.. Driving: app
-App <.. Walking: app
 App --> Modo: modo
 App <.. Modo: app
-App --> Celular:celular
+App --> Celular: celular
 Compra <|-- CompraPuntual
 Compra <|-- RecargaCelular
 Infraccion --> Inspector: inspector
